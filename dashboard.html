@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SBFR Daily Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #fff 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, #ff6f00 0%, #ff8f00 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(255, 111, 0, 0.3);
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            font-weight: 300;
+            letter-spacing: 1px;
+            opacity: 0.95;
+        }
+
+        .date-banner {
+            background: linear-gradient(135deg, #1976d2 0%, #2196f3 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
+        }
+
+        .date-banner h2 {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+
+        .date-banner p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .section-divider {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 40px 0 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-left: 5px solid #7b1fa2;
+        }
+
+        .section-divider h2 {
+            color: #7b1fa2;
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-divider p {
+            color: #666;
+            font-size: 1.05em;
+            line-height: 1.6;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .team-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            border-top: 5px solid #1976d2;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .team-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+
+        .team-card.admin {
+            border-top-color: #ff6f00;
+        }
+
+        .team-card.clinical {
+            border-top-color: #1976d2;
+        }
+
+        .team-card.nonclinical {
+            border-top-color: #388e3c;
+        }
+
+        .team-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .team-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .team-card.admin .team-icon {
+            background: linear-gradient(135deg, #ff6f00, #ff8f00);
+        }
+
+        .team-card.clinical .team-icon {
+            background: linear-gradient(135deg, #1976d2, #2196f3);
+        }
+
+        .team-card.nonclinical .team-icon {
+            background: linear-gradient(135deg, #388e3c, #4caf50);
+        }
+
+        .team-title {
+            flex: 1;
+        }
+
+        .team-title h3 {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .team-title .team-lead {
+            font-size: 0.9em;
+            color: #666;
+            font-style: italic;
+        }
+
+        .section {
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #1976d2;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-content {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #1976d2;
+        }
+
+        .gap-item, .action-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .gap-item:last-child, .action-item:last-child {
+            border-bottom: none;
+        }
+
+        .gap-item::before {
+            content: "⚠️ ";
+            margin-right: 8px;
+        }
+
+        .action-item::before {
+            content: "✓ ";
+            margin-right: 8px;
+            color: #4caf50;
+        }
+
+        .no-data {
+            color: #999;
+            font-style: italic;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2em;
+            color: #666;
+        }
+
+        .loading::after {
+            content: "...";
+            animation: dots 1.5s infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: "."; }
+            40% { content: ".."; }
+            60%, 100% { content: "..."; }
+        }
+
+        .handover-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 40px 20px;
+            flex-wrap: wrap;
+        }
+
+        .handover-btn {
+            background: linear-gradient(145deg, #7b1fa2, #9c27b0);
+            color: white;
+            border: none;
+            padding: 25px 45px;
+            font-size: 1.3em;
+            font-weight: 600;
+            border-radius: 15px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(123, 31, 162, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            min-width: 250px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .handover-btn.admin-btn {
+            background: linear-gradient(145deg, #ff6f00, #ff8f00);
+            box-shadow: 0 8px 25px rgba(255, 111, 0, 0.4);
+        }
+
+        .handover-btn.clinical-btn {
+            background: linear-gradient(145deg, #1976d2, #2196f3);
+            box-shadow: 0 8px 25px rgba(33, 150, 243, 0.4);
+        }
+
+        .handover-btn.nonclinical-btn {
+            background: linear-gradient(145deg, #388e3c, #4caf50);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+        }
+
+        .button-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .handover-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .handover-btn:hover::before {
+            left: 100%;
+        }
+
+        .handover-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+        }
+
+        .handover-btn.admin-btn:hover {
+            box-shadow: 0 12px 35px rgba(255, 111, 0, 0.6);
+        }
+
+        .handover-btn.clinical-btn:hover {
+            box-shadow: 0 12px 35px rgba(33, 150, 243, 0.6);
+        }
+
+        .handover-btn.nonclinical-btn:hover {
+            box-shadow: 0 12px 35px rgba(76, 175, 80, 0.6);
+        }
+
+        .handover-btn:hover .button-icon {
+            transform: rotateY(360deg) scale(1.1);
+        }
+
+        .handover-btn:active {
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        .home-button {
+            background: linear-gradient(145deg, #ff6f00, #ff8f00);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.2em;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(255, 111, 0, 0.4);
+            transition: all 0.3s ease;
+            display: block;
+            margin: 40px auto;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .home-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 111, 0, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .team-card {
+                padding: 20px;
+            }
+
+            .handover-buttons {
+                gap: 20px;
+            }
+
+            .handover-btn {
+                min-width: 200px;
+                padding: 20px 35px;
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 SBFR DAILY DASHBOARD</h1>
+            <p class="subtitle">Yesterday's Findings & Today's Handover Submission</p>
+        </header>
+
+        <div class="date-banner">
+            <h2>📋 YESTERDAY'S HANDOVER REPORTS</h2>
+            <h2 id="yesterdayDate">Loading...</h2>
+            <p>Review previous shift's identified gaps and actions taken</p>
+        </div>
+
+        <div id="dashboard" class="dashboard-grid">
+            <div class="loading">Loading yesterday's reports</div>
+        </div>
+
+        <!-- SECTION 2: TODAY'S HANDOVER SUBMISSION -->
+        <div class="section-divider">
+            <h2>📝 SUBMIT TODAY'S HANDOVER</h2>
+            <p>Team Leads: Click your team button to submit end-of-shift handover report</p>
+        </div>
+
+        <div class="handover-buttons">
+            <a href="admin-handover.html" class="handover-btn admin-btn">
+                <div class="button-icon">👔</div>
+                ADMIN HANDOVER
+            </a>
+            <a href="clinical-handover.html" class="handover-btn clinical-btn">
+                <div class="button-icon">⚕️</div>
+                CLINICAL HANDOVER
+            </a>
+            <a href="nonclinical-handover.html" class="handover-btn nonclinical-btn">
+                <div class="button-icon">🔧</div>
+                NON-CLINICAL HANDOVER
+            </a>
+        </div>
+
+        <a href="index.html" class="home-button">🏠 BACK TO HOMEPAGE</a>
+    </div>
+
+    <script>
+        // ============================================
+        // CONFIGURATION - UPDATE THESE WITH YOUR SHEET IDs
+        // ============================================
+        const SHEET_CONFIG = {
+            admin: '1G_d7XNXFAGGyGzTIdp5P1oakPNKAG8qGlIMiaVAiKg0',
+            clinical: '1SjCaFPmsj8k5m3IwpB4USOkuqUrg_W-CGbaI3EjpTK0',
+            nonclinical: '10nJKR24Rv386nvZipr7eIyREyqwU3SWQmUxW-27N36I'
+        };
+
+        // Display yesterday's date
+        function setYesterdayDate() {
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('yesterdayDate').textContent = 
+                yesterday.toLocaleDateString('en-US', options);
+        }
+
+        // Fetch data from Google Sheet
+        async function fetchSheetData(sheetId) {
+            try {
+                const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
+                const response = await fetch(url);
+                const text = await response.text();
+                const json = JSON.parse(text.substring(47).slice(0, -2));
+                return json.table.rows;
+            } catch (error) {
+                console.error('Error fetching sheet data:', error);
+                return [];
+            }
+        }
+
+        // Check if date is yesterday
+        function isYesterday(dateString) {
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            yesterday.setHours(0, 0, 0, 0);
+            
+            const checkDate = new Date(dateString);
+            checkDate.setHours(0, 0, 0, 0);
+            
+            return checkDate.getTime() === yesterday.getTime();
+        }
+
+        // Create team card HTML
+        function createTeamCard(teamData, teamType) {
+            const icons = {
+                admin: '👔',
+                clinical: '⚕️',
+                nonclinical: '🔧'
+            };
+
+            const teamNames = {
+                admin: 'ADMIN TEAM',
+                clinical: 'CLINICAL TEAM',
+                nonclinical: 'NON-CLINICAL TEAM'
+            };
+
+            if (!teamData) {
+                return `
+                    <div class="team-card ${teamType}">
+                        <div class="team-header">
+                            <div class="team-icon">${icons[teamType]}</div>
+                            <div class="team-title">
+                                <h3>${teamNames[teamType]}</h3>
+                            </div>
+                        </div>
+                        <div class="no-data">No handover report submitted yesterday</div>
+                    </div>
+                `;
+            }
+
+            const gaps = [teamData.gap1, teamData.gap2, teamData.gap3].filter(g => g);
+            const actions = [teamData.action1, teamData.action2, teamData.action3].filter(a => a);
+
+            return `
+                <div class="team-card ${teamType}">
+                    <div class="team-header">
+                        <div class="team-icon">${icons[teamType]}</div>
+                        <div class="team-title">
+                            <h3>${teamNames[teamType]}</h3>
+                            <p class="team-lead">Team Lead: ${teamData.teamLead || 'Not specified'}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-title">
+                            🔍 Identified Gaps
+                        </div>
+                        <div class="section-content">
+                            ${gaps.length > 0 ? 
+                                gaps.map(gap => `<div class="gap-item">${gap}</div>`).join('') :
+                                '<div class="no-data">No gaps reported</div>'
+                            }
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">
+                            ✅ Actions Taken
+                        </div>
+                        <div class="section-content">
+                            ${actions.length > 0 ?
+                                actions.map(action => `<div class="action-item">${action}</div>`).join('') :
+                                '<div class="no-data">No actions reported</div>'
+                            }
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Process sheet data to find yesterday's entry
+        function processSheetData(rows) {
+            if (!rows || rows.length === 0) return null;
+
+            // Find yesterday's entries
+            for (let row of rows) {
+                const cells = row.c;
+                if (!cells || !cells[0]) continue;
+
+                const timestamp = cells[0].f || cells[0].v;
+                if (isYesterday(timestamp)) {
+                    return {
+                        teamLead: cells[2]?.v || '',
+                        gap1: cells[3]?.v || '',
+                        gap2: cells[4]?.v || '',
+                        gap3: cells[5]?.v || '',
+                        action1: cells[6]?.v || '',
+                        action2: cells[7]?.v || '',
+                        action3: cells[8]?.v || ''
+                    };
+                }
+            }
+            return null;
+        }
+
+        // Load all dashboard data
+        async function loadDashboard() {
+            const dashboard = document.getElementById('dashboard');
+            
+            // Check if Sheet IDs are configured
+            const isConfigured = Object.values(SHEET_CONFIG).every(id => 
+                id && id !== 'YOUR_ADMIN_SHEET_ID_HERE' && 
+                id !== 'YOUR_CLINICAL_SHEET_ID_HERE' && 
+                id !== 'YOUR_NONCLINICAL_SHEET_ID_HERE'
+            );
+
+            if (!isConfigured) {
+                dashboard.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 40px; background: white; border-radius: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.1);">
+                        <h2 style="color: #ff6f00; margin-bottom: 15px;">⚙️ Configuration Required</h2>
+                        <p style="color: #666; font-size: 1.1em;">Please update the SHEET_CONFIG object in the code with your Google Sheet IDs.</p>
+                        <p style="color: #999; margin-top: 10px;">See instructions above for setup details.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                // Fetch all team data
+                const [adminRows, clinicalRows, nonClinicalRows] = await Promise.all([
+                    fetchSheetData(SHEET_CONFIG.admin),
+                    fetchSheetData(SHEET_CONFIG.clinical),
+                    fetchSheetData(SHEET_CONFIG.nonclinical)
+                ]);
+
+                // Process data
+                const adminData = processSheetData(adminRows);
+                const clinicalData = processSheetData(clinicalRows);
+                const nonClinicalData = processSheetData(nonClinicalRows);
+
+                // Generate cards
+                dashboard.innerHTML = 
+                    createTeamCard(adminData, 'admin') +
+                    createTeamCard(clinicalData, 'clinical') +
+                    createTeamCard(nonClinicalData, 'nonclinical');
+
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+                dashboard.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 40px; background: white; border-radius: 20px;">
+                        <h2 style="color: #f44336;">❌ Error Loading Data</h2>
+                        <p style="color: #666; margin-top: 10px;">Please check your Sheet IDs and ensure sheets are publicly accessible.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Initialize
+        setYesterdayDate();
+        loadDashboard();
+    </script>
+</body>
+</html>

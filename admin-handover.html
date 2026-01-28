@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Daily Handover - SBFR</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #fff 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: linear-gradient(135deg, #ff6f00 0%, #ff8f00 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(255, 111, 0, 0.3);
+            position: relative;
+        }
+
+        .nav-back {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            z-index: 10;
+        }
+
+        .arrow-btn {
+            background: linear-gradient(145deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+            border: 2px solid rgba(255,255,255,0.5);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            text-decoration: none;
+        }
+
+        .arrow-btn:hover {
+            background: linear-gradient(145deg, rgba(255,255,255,0.5), rgba(255,255,255,0.3));
+            transform: scale(1.15);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .arrow-btn:active {
+            transform: scale(0.95);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            font-weight: 300;
+            letter-spacing: 1px;
+            opacity: 0.95;
+        }
+
+        .content {
+            flex: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            width: 100%;
+        }
+
+        .form-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            margin: 30px auto;
+            max-width: 100%;
+            width: 100%;
+            border-top: 5px solid #ff6f00;
+        }
+
+        .form-container h2 {
+            color: #ff6f00;
+            margin-bottom: 20px;
+            font-size: 2em;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .form-description {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            color: #e65100;
+            font-size: 1.05em;
+            line-height: 1.6;
+        }
+
+        .form-description strong {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .form-embed {
+            background: #f9f9f9;
+            padding: 0;
+            border-radius: 15px;
+            text-align: center;
+            min-height: 800px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .form-embed iframe {
+            width: 100%;
+            min-height: 1200px;
+            border: none;
+            border-radius: 15px;
+        }
+
+        .home-button {
+            background: linear-gradient(145deg, #1976d2, #2196f3);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.2em;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+            transition: all 0.3s ease;
+            display: block;
+            margin: 40px auto 20px;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .home-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(33, 150, 243, 0.6);
+        }
+
+        footer {
+            background: linear-gradient(135deg, #ff6f00 0%, #ff8f00 100%);
+            color: white;
+            text-align: center;
+            padding: 25px 20px;
+            margin-top: auto;
+            box-shadow: 0 -4px 20px rgba(255, 111, 0, 0.3);
+        }
+
+        .footer-content {
+            font-size: 1em;
+            margin-bottom: 8px;
+        }
+
+        .footer-slogan {
+            font-size: 0.95em;
+            opacity: 0.9;
+            font-style: italic;
+            font-weight: 300;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8em; }
+            .subtitle { font-size: 0.95em; }
+            .form-container { 
+                padding: 20px 10px;
+                margin: 20px 10px;
+                border-radius: 15px;
+            }
+            .form-container h2 { font-size: 1.6em; }
+            .form-description { 
+                padding: 15px;
+                font-size: 1em;
+            }
+            .form-embed {
+                padding: 0;
+                border-radius: 10px;
+                min-height: 1000px;
+            }
+            .form-embed iframe {
+                min-height: 1400px;
+            }
+            .content {
+                padding: 20px 10px;
+            }
+            .nav-back {
+                left: 10px;
+            }
+            .arrow-btn {
+                width: 38px;
+                height: 38px;
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="nav-back">
+            <a href="dashboard.html" class="arrow-btn" title="Back to Dashboard">◄</a>
+        </div>
+        <h1>👔 ADMIN DAILY HANDOVER</h1>
+        <p class="subtitle">End-of-Shift Summary Report</p>
+    </header>
+
+    <div class="content">
+        <div class="form-container">
+            <h2>📝 ADMIN TEAM HANDOVER FORM</h2>
+            <div class="form-description">
+                <strong>Instructions for Team Lead:</strong>
+                Please complete this brief handover form before ending your shift. Summarize the top 3 gaps identified during your evaluation and the top 3 actions your team took to address challenges. This information helps the next shift focus on critical issues and maintain continuity of care.
+            </div>
+            <div class="form-embed">
+                <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSea4o_uNnligXqLEBNO6nX2j3-ezE0x4R7ete3Cd8q8EfhPzA/viewform?embedded=true" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+            </div>
+        </div>
+
+        <a href="dashboard.html" class="home-button">📊 BACK TO DASHBOARD</a>
+    </div>
+
+    <footer>
+        <div class="footer-content">© 2026 WCSH CGQID</div>
+        <div class="footer-slogan">"Excellence Through Continuous Quality Improvement"</div>
+    </footer>
+</body>
+</html>
